@@ -10,11 +10,28 @@ public class FracCalc {
         // TODO: Read the input from the user and call produceAnswer with an equation
         // Checkpoint 1: Create a Scanner, read one line of input, pass that input to produceAnswer, print the result.
         // Checkpoint 2: Accept user input multiple times.
-    	Scanner console = new Scanner(System.in);
-    	System.out.println("Enter a calculation: (Ex. 1_1/4 + 3)");
-    	String calculation = console.nextLine();
-    	String output = produceAnswer(calculation);
-    	System.out.println(output);
+    	
+    	//setting continuingto true initially to initiate the while loop to accept input multiple times depending on user choice
+    	boolean continuing = true;
+    	while(continuing)
+    	{
+	    	Scanner console = new Scanner(System.in);
+	    	System.out.println("Enter a calculation: (Ex. 1_1/4 + 3)");
+	    	String calculation = console.nextLine();
+	    	String output = produceAnswer(calculation);
+	    	System.out.println(output);
+	    	
+	    	//checks user input to see whether the program should continue
+	    	//created another scanner to test
+	    	Scanner test = new Scanner(System.in);
+	    	System.out.println("Do you want to continue using the calculator?(Enter y or n)");
+	    	String response = test.nextLine();
+	    	if (response.equals("n"))
+	    	{
+	    		System.out.println("Good day to you!");
+	    		continuing = false;
+	    	}
+    	}
     }
     
     /**
@@ -40,7 +57,21 @@ public class FracCalc {
     	//and reach the starting index of the second operand
     	int secondOpIndex = input.indexOf(" ") + 3;
     	String secondOperand = input.substring(secondOpIndex, input.length());
-        return secondOperand;
+    	//finding whether the _ is to separate the whole number from the fraction
+    	
+    	//I added secondOpIndex to these as they are seperated from the input String and therefore needed to be converted to 
+    	//resemble the input String length again to avoid out of Bound exception errors
+    	int seperation= secondOperand.indexOf("_") + secondOpIndex;
+    	int divisor = secondOperand.indexOf("/") + secondOpIndex;
+    	
+    	//converted integers from the strings between certain indexes and key divisors and seperators
+    	int whole = Integer.parseInt(input.substring(secondOpIndex,seperation));
+    	int numerator = Integer.parseInt(input.substring(seperation+1, divisor));
+    	int denominator = Integer.parseInt(input.substring(divisor+1,input.length()));
+    	
+    	//compiling everything into one string to return
+    	String breakdown = "whole: " + whole + "\nnumerator: " + numerator + "\ndenominator: " + denominator;
+        return breakdown;
     }
 
     // TODO: Fill in the space below with helper methods
