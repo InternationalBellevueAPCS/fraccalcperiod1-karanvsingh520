@@ -11,7 +11,7 @@ public class FracCalc {
         // Checkpoint 1: Create a Scanner, read one line of input, pass that input to produceAnswer, print the result.
         // Checkpoint 2: Accept user input multiple times.
     	
-    	//setting continuingto true initially to initiate the while loop to accept input multiple times depending on user choice
+    	//setting continuing to true initially to initiate the while loop to accept input multiple times depending on user choice
     	boolean continuing = true;
     	while(continuing)
     	{
@@ -58,20 +58,162 @@ public class FracCalc {
     	int secondOpIndex = input.indexOf(" ") + 3;
     	String secondOperand = input.substring(secondOpIndex, input.length());
     	//finding whether the _ is to separate the whole number from the fraction
+    	int seperation= secondOperand.indexOf("_");
+    	//finding whether there is a fraction in second operand
+    	int divisor = secondOperand.indexOf("/");
+    	//initialize all parts of the second operand
+    	int whole;
+    	int numerator;
+    	int denominator;
+    	//if the input's second operand is just a whole number, with no fraction
+    	if (seperation == -1 && divisor == -1)
+    	{
+    		whole = Integer.parseInt(input.substring(secondOpIndex,input.length()));
+    		numerator = 0;
+    		denominator = 1;
+    	}
+    	//if the input's second operand is just a fraction, with no whole number
+    	else if(seperation == -1 && divisor != -1)
+    	{
+    		//I added secondOpIndex to the divisor as divisor is a substring of the second operand 
+    		//but needs to be in the context of the full input string
+    		divisor += secondOpIndex;
+    		whole = 0;
+    		numerator = Integer.parseInt(input.substring(secondOpIndex, divisor));
+    		//I added 1 to divisor since I want the substring to start on the number right after the fraction sign
+    		denominator = Integer.parseInt(input.substring(divisor+1, input.length()));
+    	}
+    	//if the input is normal and has both a whole number and fraction
+    	else 
+    	{
+    		//I added secondOpIndex to the divisor and separator as they are a substring of the second operand 
+    		//but needs to be in the context of the full input string
+    		seperation += secondOpIndex;
+    		divisor += secondOpIndex;
+    		whole = Integer.parseInt(input.substring(secondOpIndex,seperation));
+    		//I added 1 to divisor and separator since I want the substring to start on the number right after the fraction sign and _ symbol
+        	numerator = Integer.parseInt(input.substring(seperation+1, divisor));
+        	denominator = Integer.parseInt(input.substring(divisor+1,input.length()));
+    	}
+    	//getting the first operand
+    	int firstOpFinalIndex = input.indexOf(" ");
+    	String firstOperand = input.substring(0, firstOpFinalIndex);
+    	int seperation1= firstOperand.indexOf("_");
+    	//finding whether there is a fraction in second operand
+    	int divisor1 = firstOperand.indexOf("/");
+    	//initialize all parts of the second operand
+    	int whole1;
+    	int numerator1;
+    	int denominator1;
+    	//if the input's first operand is just a whole number, with no fraction
+    	if (seperation1 == -1 && divisor1 == -1)
+    	{
+    		whole1 = Integer.parseInt(input.substring(0,firstOpFinalIndex));
+    		numerator1 = 0;
+    		denominator1 = 1;
+    	}
+    	//if the input's second operand is just a fraction, with no whole number
+    	else if(seperation1 == -1 && divisor1 != -1)
+    	{
+    		whole1 = 0;
+    		numerator1 = Integer.parseInt(input.substring(0, divisor1));
+    		//I added 1 to divisor since I want the substring to start on the number right after the fraction sign
+    		denominator1 = Integer.parseInt(input.substring(divisor1+1,firstOpFinalIndex));
+    	}
+    	//if the input is normal and has both a whole number and fraction
+    	else 
+    	{
+    		whole1 = Integer.parseInt(input.substring(0,seperation1));
+    		//I added 1 to divisor and separator since I want the substring to start on the number right after the fraction sign and _ symbol
+        	numerator1 = Integer.parseInt(input.substring(seperation1+1, divisor1));
+        	denominator1 = Integer.parseInt(input.substring(divisor1+1,firstOpFinalIndex));
+    	}
     	
-    	//I added secondOpIndex to these as they are seperated from the input String and therefore needed to be converted to 
-    	//resemble the input String length again to avoid out of Bound exception errors
-    	int seperation= secondOperand.indexOf("_") + secondOpIndex;
-    	int divisor = secondOperand.indexOf("/") + secondOpIndex;
+    	//Converting complex fraction to a single number
     	
-    	//converted integers from the strings between certain indexes and key divisors and seperators
-    	int whole = Integer.parseInt(input.substring(secondOpIndex,seperation));
-    	int numerator = Integer.parseInt(input.substring(seperation+1, divisor));
-    	int denominator = Integer.parseInt(input.substring(divisor+1,input.length()));
+    	//I am converting the first operand whole number to a fraction to add to its fraction if there is one
+    	int firstOpWholeNumberNumerator = (whole1 * denominator1);
+    	int firstOpWholeNumberDenominator = denominator1;
+    	int firstEntireNumberNumerator;
+    	//if the first operand is negative, we need to subtract rather than add the fraction to the whole number
+    	if(whole1<0)
+    	{
+    		firstEntireNumberNumerator = firstOpWholeNumberNumerator - numerator1;
+    	}
     	
-    	//compiling everything into one string to return
-    	String breakdown = "whole: " + whole + "\nnumerator: " + numerator + "\ndenominator: " + denominator;
-        return breakdown;
+    	else
+    	{
+    		firstEntireNumberNumerator = firstOpWholeNumberNumerator + numerator1;
+    	}
+    			
+    	//I am converting the second operand whole number to a fraction to add to the other fraction if there is one
+    	int secondOpWholeNumberNumerator = (whole * denominator);
+    	int secondOpWholeNumberDenominator = denominator;
+    	int secondEntireNumberNumerator;
+    	//if the first operand is negative, we need to subtract rather than add the fraction to the whole number
+    	if(whole < 0)
+    	{
+    		secondEntireNumberNumerator = secondOpWholeNumberNumerator - numerator;
+    	}
+    	
+    	else
+    	{
+    		secondEntireNumberNumerator = secondOpWholeNumberNumerator + numerator;
+    	}
+    	
+    	//only for add/subtract, math behind the addition/subtraction of fractions
+    	
+    	//finding the overall denominator of the product for addition and subtraction by taking least common multiple
+    	int finalDenominator = leastCommonMultiple(firstOpWholeNumberDenominator,secondOpWholeNumberDenominator);
+    	
+    	//converting both operands fractions to be compatible with each other when performing addition and subtraction
+    	int firstMultiplier = finalDenominator/firstOpWholeNumberDenominator;
+    	int secondMultiplier = finalDenominator/secondOpWholeNumberDenominator;
+    	//multiplying both operand fraction numerators to convert them so they have equal denominators
+    	int finalFirstEntireNumberNumerator = firstEntireNumberNumerator * firstMultiplier;
+    	int finalSecondEntireNumberNumerator = secondEntireNumberNumerator * secondMultiplier;
+    	
+    	//initializing return variable
+    	String computation;
+    	//if the operation is addition
+    	if(input.indexOf("+") != -1)
+    	{
+    		//getting numerator of both fractions combined
+    		int totalNumerator = (finalFirstEntireNumberNumerator + finalSecondEntireNumberNumerator);
+    		computation = totalNumerator + "/" + finalDenominator;
+    		return computation;
+    	}
+    	//if the operation is subtraction
+    	//added spaces before and after since it is the same symbol as a negative sign and needs to be distinguished as an operation
+    	else if(input.indexOf(" - ") != -1)
+    	{
+    		//getting numerator of second fraction subtracted from first
+    		int totalNumerator = (finalFirstEntireNumberNumerator - finalSecondEntireNumberNumerator);
+    		computation = totalNumerator + "/" + finalDenominator;
+    		return computation;
+    	}
+    	//if the operation is multiplication
+    	else if(input.indexOf("*") != -1)
+    	{
+    		//don't have to use any of the addition/subtraction operation variables
+    		int totalNumerator = firstEntireNumberNumerator * secondEntireNumberNumerator;
+    		int totalDenominator = denominator1 * denominator;
+    		computation = totalNumerator + "/" + totalDenominator;
+    		return computation;
+    	}
+    	//if the operation is division
+    	else
+    	{
+    		//don't have to use any of the addition/subtraction operation variables
+    		
+    		//need to flip the second operand's numerator and denominator to perform operation that is why denominator
+    		//of second operand is in operation of totalNumerator and visa versa for the totalDenominator
+    		
+    		int totalNumerator = firstEntireNumberNumerator * denominator;
+    		int totalDenominator = denominator1 * secondEntireNumberNumerator;
+    		computation = totalNumerator + "/" + totalDenominator;
+    		return computation;
+    	}
     }
 
     // TODO: Fill in the space below with helper methods
