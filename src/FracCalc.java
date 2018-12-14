@@ -130,7 +130,6 @@ public class FracCalc {
     	}
     	
     	//Converting complex fraction to a single number
-    	
     	//I am converting the first operand whole number to a fraction to add to its fraction if there is one
     	int firstOpWholeNumberNumerator = (whole1 * denominator1);
     	int firstOpWholeNumberDenominator = denominator1;
@@ -180,7 +179,40 @@ public class FracCalc {
     	{
     		//getting numerator of both fractions combined
     		int totalNumerator = (finalFirstEntireNumberNumerator + finalSecondEntireNumberNumerator);
-    		computation = totalNumerator + "/" + finalDenominator;
+    		//simplifying the fraction
+    		int simplify = greatestCommonDivisor(totalNumerator, finalDenominator);
+    		int simplifiedTotalNumerator = totalNumerator/simplify;
+    		int simplifiedFinalDenominator = finalDenominator/simplify;
+
+    		//checks if the denominator is 1 or -1 so it can make simplification
+    		if (simplifiedFinalDenominator == 1)
+    		{
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else if (simplifiedFinalDenominator == -1)
+    		{
+    			simplifiedTotalNumerator *= -1;
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else
+    		{
+    			//checks to see if the numerator is greater than the denominator to simplify back into complex number
+        		//I have to absolute value just in case the numerator is negative
+        		if (Math.abs(simplifiedTotalNumerator) > simplifiedFinalDenominator)
+        		{
+        			//gets the whole number through integer division than converts it back 
+        			//to the fraction to subtract it from the total numerator to get the fraction as well
+        			int simplifiedWholeNumber = simplifiedTotalNumerator/simplifiedFinalDenominator;
+        			int tempFractionNumerator = simplifiedWholeNumber * simplifiedFinalDenominator;
+        			int simplifiedFractionNumerator = simplifiedTotalNumerator - tempFractionNumerator;
+        			computation = simplifiedWholeNumber + "_" + Math.abs(simplifiedFractionNumerator) + "/" + simplifiedFinalDenominator;
+        		}
+        		else
+        		{
+        			computation = simplifiedTotalNumerator + "/" + simplifiedFinalDenominator;
+        		}
+    		}
+    		
     		return computation;
     	}
     	//if the operation is subtraction
@@ -189,16 +221,135 @@ public class FracCalc {
     	{
     		//getting numerator of second fraction subtracted from first
     		int totalNumerator = (finalFirstEntireNumberNumerator - finalSecondEntireNumberNumerator);
-    		computation = totalNumerator + "/" + finalDenominator;
+    		int simplify = greatestCommonDivisor(totalNumerator, finalDenominator);
+    		int simplifiedTotalNumerator = totalNumerator/simplify;
+    		int simplifiedFinalDenominator = finalDenominator/simplify;
+    		
+    		//checks if the denominator is 1 or -1 so it can make simplification
+    		if (simplifiedFinalDenominator == 1)
+    		{
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else if (simplifiedFinalDenominator == -1)
+    		{
+    			simplifiedTotalNumerator *= -1;
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else 
+    		{
+    			//checks to see if the numerator is greater than the denominator to simplify back into complex number
+        		//I have to absolute value just in case the numerator is negative
+        		if (Math.abs(simplifiedTotalNumerator) > simplifiedFinalDenominator)
+        		{
+        			//gets the whole number through integer division than converts it back 
+        			//to the fraction to subtract it from the total numerator to get the fraction as well
+        			int simplifiedWholeNumber = simplifiedTotalNumerator/simplifiedFinalDenominator;
+        			int tempFractionNumerator = simplifiedWholeNumber * simplifiedFinalDenominator;
+        			int simplifiedFractionNumerator = simplifiedTotalNumerator - tempFractionNumerator;
+        			//if there is no whole number, there is no need to absolute value the numerator and denominator
+        			if (simplifiedWholeNumber == 0)
+        			{
+        				//switches negative sign from denominator to numerator if the return value is only a fraction
+        				if(simplifiedFinalDenominator < 0)
+        				{
+        					simplifiedFractionNumerator *= -1;
+        					simplifiedFinalDenominator *= -1;
+        				}
+        				computation = simplifiedFractionNumerator + "/" + simplifiedFinalDenominator;
+        			}
+        			else
+        			{
+        			computation = simplifiedWholeNumber + "_" + Math.abs(simplifiedFractionNumerator) + "/" + Math.abs(simplifiedFinalDenominator);
+        			}
+        		}
+        		else
+        		{
+        			computation = simplifiedTotalNumerator + "/" + simplifiedFinalDenominator;
+        		}
+    		}
     		return computation;
     	}
+    		
     	//if the operation is multiplication
     	else if(input.indexOf("*") != -1)
     	{
     		//don't have to use any of the addition/subtraction operation variables
     		int totalNumerator = firstEntireNumberNumerator * secondEntireNumberNumerator;
     		int totalDenominator = denominator1 * denominator;
-    		computation = totalNumerator + "/" + totalDenominator;
+    		int simplify = greatestCommonDivisor(totalNumerator, totalDenominator);
+    		int simplifiedTotalNumerator = totalNumerator/simplify;
+    		int simplifiedFinalDenominator = totalDenominator/simplify;
+    		
+    		//checks to see if the numerator is greater than the denominator to simplify back into complex number
+    		//I have to absolute value just in case the numerator is negative
+    		if (Math.abs(simplifiedTotalNumerator) > simplifiedFinalDenominator)
+    		{
+    			//gets the whole number through integer division than converts it back 
+    			//to the fraction to subtract it from the total numerator to get the fraction as well
+    			int simplifiedWholeNumber = simplifiedTotalNumerator/simplifiedFinalDenominator;
+    			int tempFractionNumerator = simplifiedWholeNumber * simplifiedFinalDenominator;
+    			int simplifiedFractionNumerator = simplifiedTotalNumerator - tempFractionNumerator;
+    			//if there is no whole number, there is no need to absolute value the numerator and denominator
+    			if (simplifiedWholeNumber == 0)
+    			{
+    				//switches negative sign from denominator to numerator if the return value is only a fraction
+    				if(simplifiedFinalDenominator < 0)
+    				{
+    					simplifiedFractionNumerator *= -1;
+    					simplifiedFinalDenominator *= -1;
+    				}
+    				computation = simplifiedFractionNumerator + "/" + simplifiedFinalDenominator;
+    			}
+    			else
+    			{
+    			computation = simplifiedWholeNumber + "_" + Math.abs(simplifiedFractionNumerator) + "/" + Math.abs(simplifiedFinalDenominator);
+    			}
+    		}
+    		
+    		//checks if the denominator is 1 or -1 so it can make simplification
+    		if (simplifiedFinalDenominator == 1)
+    		{
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		
+    		else if (simplifiedFinalDenominator == -1)
+    		{
+    			simplifiedTotalNumerator *= -1;
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else
+    		{
+    			//checks to see if the numerator is greater than the denominator to simplify back into complex number
+        		//I have to absolute value just in case the numerator is negative
+        		if (Math.abs(simplifiedTotalNumerator) > simplifiedFinalDenominator)
+        		{
+        			//gets the whole number through integer division than converts it back 
+        			//to the fraction to subtract it from the total numerator to get the fraction as well
+        			int simplifiedWholeNumber = simplifiedTotalNumerator/simplifiedFinalDenominator;
+        			int tempFractionNumerator = simplifiedWholeNumber * simplifiedFinalDenominator;
+        			int simplifiedFractionNumerator = simplifiedTotalNumerator - tempFractionNumerator;
+        			//if there is no whole number, there is no need to absolute value the numerator and denominator
+        			if (simplifiedWholeNumber == 0)
+        			{
+        				//switches negative sign from denominator to numerator if the return value is only a fraction
+        				if(simplifiedFinalDenominator < 0)
+        				{
+        					simplifiedFractionNumerator *= -1;
+        					simplifiedFinalDenominator *= -1;
+        				}
+        				computation = simplifiedFractionNumerator + "/" + simplifiedFinalDenominator;
+        			}
+        			else
+        			{
+        			computation = simplifiedWholeNumber + "_" + Math.abs(simplifiedFractionNumerator) + "/" + Math.abs(simplifiedFinalDenominator);
+        			}
+        		}
+        		else
+        		{
+        			computation = simplifiedTotalNumerator + "/" + simplifiedFinalDenominator;
+        		}
+    		}
+
     		return computation;
     	}
     	//if the operation is division
@@ -211,7 +362,52 @@ public class FracCalc {
     		
     		int totalNumerator = firstEntireNumberNumerator * denominator;
     		int totalDenominator = denominator1 * secondEntireNumberNumerator;
-    		computation = totalNumerator + "/" + totalDenominator;
+    		int simplify = greatestCommonDivisor(totalNumerator, totalDenominator);
+    		int simplifiedTotalNumerator = totalNumerator/simplify;
+    		int simplifiedFinalDenominator = totalDenominator/simplify;
+    		
+    		//checks if the denominator is 1 or -1 so it can make simplification
+    		if (simplifiedFinalDenominator == 1)
+    		{
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else if (simplifiedFinalDenominator == -1)
+    		{
+    			simplifiedTotalNumerator *= -1;
+    			computation = simplifiedTotalNumerator + "";
+    		}
+    		else
+    		{
+    			//checks to see if the numerator is greater than the denominator to simplify back into complex number
+        		//I have to absolute value just in case the numerator is negative
+        		if (Math.abs(simplifiedTotalNumerator) > simplifiedFinalDenominator)
+        		{
+        			//gets the whole number through integer division than converts it back 
+        			//to the fraction to subtract it from the total numerator to get the fraction as well
+        			int simplifiedWholeNumber = simplifiedTotalNumerator/simplifiedFinalDenominator;
+        			int tempFractionNumerator = simplifiedWholeNumber * simplifiedFinalDenominator;
+        			int simplifiedFractionNumerator = simplifiedTotalNumerator - tempFractionNumerator;
+        			//if there is no whole number, there is no need to absolute value the numerator and denominator
+        			if (simplifiedWholeNumber == 0)
+        			{
+        				//switches negative sign from denominator to numerator if the return value is only a fraction
+        				if(simplifiedFinalDenominator < 0)
+        				{
+        					simplifiedFractionNumerator *= -1;
+        					simplifiedFinalDenominator *= -1;
+        				}
+        				computation = simplifiedFractionNumerator + "/" + simplifiedFinalDenominator;
+        			}
+        			else
+        			{
+        			computation = simplifiedWholeNumber + "_" + Math.abs(simplifiedFractionNumerator) + "/" + Math.abs(simplifiedFinalDenominator);
+        			}
+        		}
+        		else
+        		{
+        			computation = simplifiedTotalNumerator + "/" + simplifiedFinalDenominator;
+        		}
+    		}
     		return computation;
     	}
     }
